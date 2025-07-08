@@ -4,6 +4,8 @@ import com.example.demo.domain.UserRole;
 import com.example.demo.dto.CreateAlternantDto;
 import com.example.demo.dto.CreateEcoleDto;
 import com.example.demo.dto.CreateRecruteurDto;
+import com.example.demo.dto.LoginDto;
+import com.example.demo.dto.LoginResponseDto;
 import com.example.demo.dto.UtilisateurResponseDto;
 import com.example.demo.service.UtilisateurService;
 import lombok.RequiredArgsConstructor;
@@ -48,9 +50,21 @@ public class UtilisateurController {
         return ResponseEntity.ok(utilisateurs);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginDto loginDto) {
+        LoginResponseDto response = utilisateurService.login(loginDto);
+        
+        if (response.isSuccess()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+    }
+
     @PostMapping("/alternant")
     public ResponseEntity<UtilisateurResponseDto> createAlternant(@Valid @RequestBody CreateAlternantDto dto) {
         UtilisateurResponseDto utilisateur = utilisateurService.createAlternant(dto);
+        System.out.println(utilisateur);
         return ResponseEntity.status(HttpStatus.CREATED).body(utilisateur);
     }
 

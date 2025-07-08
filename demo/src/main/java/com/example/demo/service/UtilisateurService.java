@@ -4,6 +4,8 @@ import com.example.demo.domain.*;
 import com.example.demo.dto.CreateAlternantDto;
 import com.example.demo.dto.CreateEcoleDto;
 import com.example.demo.dto.CreateRecruteurDto;
+import com.example.demo.dto.LoginDto;
+import com.example.demo.dto.LoginResponseDto;
 import com.example.demo.dto.UtilisateurResponseDto;
 import com.example.demo.exception.EmailAlreadyExistsException;
 import com.example.demo.exception.UtilisateurNotFoundException;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -136,6 +139,29 @@ public class UtilisateurService {
         recruteurProfileRepository.save(profile);
 
         return convertToDto(utilisateur);
+    }
+
+    public LoginResponseDto login(LoginDto loginDto) {
+        Optional<Utilisateur> utilisateurOpt = utilisateurRepository.findByEmail(loginDto.getEmail());
+        
+        if (utilisateurOpt.isEmpty()) {
+            return new LoginResponseDto("Email ou mot de passe incorrect");
+        }
+        
+        Utilisateur utilisateur = utilisateurOpt.get();
+        
+        // Vérifier le mot de passe
+        if (!passwordEncoder.matches(loginDto.getMotDePasse(), utilisateur.getMotDePasseHash())) {
+            return new LoginResponseDto("Email ou mot de passe incorrect");
+        }
+        
+        // Connexion réussie
+        return new LoginResponseDto(
+            utilisateur.getId(),
+            utilisateur.getEmail(),
+            utilisateur.getRole(),
+            utilisateur.getDateCreation()
+        );
     }
 
     public void deleteUtilisateur(Long id) {
