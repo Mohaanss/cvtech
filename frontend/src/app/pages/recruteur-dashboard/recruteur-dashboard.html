@@ -1,0 +1,34 @@
+<div class="min-h-screen bg-gray-50 flex flex-col items-center px-4 py-8">
+  <h2 class="text-3xl font-bold mb-8">Espace Recruteur – Liste des CV</h2>
+
+  <p *ngIf="message()" class="text-red-600 mb-4">{{ message() }}</p>
+
+  <table *ngIf="cvs().length; else noData"
+         class="w-full max-w-4xl bg-white shadow rounded-lg overflow-hidden">
+    <thead class="bg-blue-600 text-white">
+      <tr>
+        <th class="px-4 py-2 text-left">Nom</th>
+        <th class="px-4 py-2 text-left">Email</th>
+        <th class="px-4 py-2 text-left">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let cv of cvs()" class="border-b hover:bg-gray-50">
+        <td class="px-4 py-2">{{ cv.prenom }} {{ cv.nom }}</td>
+        <td class="px-4 py-2">{{ cv.email }}</td>
+        <td class="px-4 py-2">
+          <button
+            (click)="download(cv)"
+            class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+          >
+            Télécharger
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <ng-template #noData>
+    <p class="text-gray-600">Aucun CV disponible pour le moment.</p>
+  </ng-template>
+</div>
