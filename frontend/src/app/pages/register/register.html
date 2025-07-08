@@ -15,6 +15,17 @@
       </button>
     </div>
 
+    <!-- Messages d'erreur ou de succès -->
+    <div *ngIf="message()" class="mb-6 p-4 rounded-lg" 
+         [class.bg-red-100]="message()?.type === 'error'"
+         [class.border-red-400]="message()?.type === 'error'"
+         [class.text-red-700]="message()?.type === 'error'"
+         [class.bg-green-100]="message()?.type === 'success'"
+         [class.border-green-400]="message()?.type === 'success'"
+         [class.text-green-700]="message()?.type === 'success'">
+      {{ message()?.text }}
+    </div>
+
     <form
       [formGroup]="form"
       (ngSubmit)="onSubmit()"
@@ -41,6 +52,8 @@
       <!-- bloc école -->
       <div *ngIf="role() === 'ecole'" formGroupName="ecole" class="grid gap-4">
         <input placeholder="Nom de l'école" formControlName="nom" class="w-full border border-gray-300 rounded px-3 py-2" />
+        <input placeholder="Adresse" formControlName="adresse" class="w-full border border-gray-300 rounded px-3 py-2" />
+        <input placeholder="Site web" formControlName="site_web" class="w-full border border-gray-300 rounded px-3 py-2" />
       </div>
 
       <!-- bloc recruteur -->
@@ -54,10 +67,11 @@
       <!-- bouton submit -->
       <button
         type="submit"
-        [disabled]="form.invalid"
-        class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 disabled:bg-blue-300"
+        [disabled]="form.invalid || isLoading()"
+        class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
       >
-        Valider l'inscription
+        <span *ngIf="!isLoading()">Valider l'inscription</span>
+        <span *ngIf="isLoading()">Inscription en cours...</span>
       </button>
     </form>
 
