@@ -1,45 +1,67 @@
-<div class="min-h-screen bg-gray-50 flex items-center justify-center">
-  <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
-    <h2 class="text-3xl font-semibold mb-6 text-center">Créer un compte</h2>
+<div class="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+  <div class="bg-white shadow-xl rounded-xl p-8 w-full max-w-2xl">
+    <h2 class="text-3xl font-bold text-center mb-6">Créer un compte</h2>
 
-    <form (ngSubmit)="onRegister()" #form="ngForm" class="space-y-4">
-      <input
-        type="text"
-        placeholder="Nom complet"
-        class="w-full border border-gray-300 rounded px-3 py-2"
-        required
-        ngModel
-        name="fullname"
-      />
+    <!-- Choix du rôle -->
+    <div class="flex justify-center gap-4 mb-8">
+      <button
+        *ngFor="let r of ['alternant','ecole','recruteur']"
+        class="px-4 py-2 rounded-lg border hover:bg-blue-50"
+        [class.bg-blue-600]="role() === r"
+        [class.text-white]="role() === r"
+        (click)="changeRole(r)"          
+      >
+        {{ r | titlecase }}
+      </button>
+    </div>
 
-      <input
-        type="email"
-        placeholder="Email"
-        class="w-full border border-gray-300 rounded px-3 py-2"
-        required
-        ngModel
-        name="email"
-      />
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()"
+      class="space-y-6"
+      autocomplete="off"
+    >
+      <!-- bloc compte -->
+      <div class="grid md:grid-cols-2 gap-4">
+        <input type="email"  placeholder="Email"        formControlName="email"    class="w-full border border-gray-300 rounded px-3 py-2" />
+        <input type="password" placeholder="Mot de passe" formControlName="password" class="w-full border border-gray-300 rounded px-3 py-2" />
+      </div>
 
-      <input
-        type="password"
-        placeholder="Mot de passe"
-        class="w-full border border-gray-300 rounded px-3 py-2"
-        required
-        ngModel
-        name="password"
-      />
+      <!-- bloc alternant -->
+      <div *ngIf="role() === 'alternant'" formGroupName="alternant" class="grid md:grid-cols-2 gap-4">
+        <input placeholder="Nom"            formControlName="nom"            class="w-full border border-gray-300 rounded px-3 py-2" />
+        <input placeholder="Prénom"         formControlName="prenom"         class="w-full border border-gray-300 rounded px-3 py-2" />
+        <input placeholder="Téléphone"      formControlName="telephone"      class="w-full border border-gray-300 rounded px-3 py-2" />
+        <input placeholder="Ville"          formControlName="ville"          class="w-full border border-gray-300 rounded px-3 py-2" />
+        <input placeholder="Lien LinkedIn"  formControlName="lien_linkedin"  class="w-full border border-gray-300 rounded px-3 py-2" />
+        <input placeholder="Lien Portfolio" formControlName="lien_portfolio" class="w-full border border-gray-300 rounded px-3 py-2" />
+        <input type="date" placeholder="Date de naissance" formControlName="date_naissance" class="w-full border border-gray-300 rounded px-3 py-2" />
+      </div>
 
+      <!-- bloc école -->
+      <div *ngIf="role() === 'ecole'" formGroupName="ecole" class="grid gap-4">
+        <input placeholder="Nom de l'école" formControlName="nom" class="w-full border border-gray-300 rounded px-3 py-2" />
+      </div>
+
+      <!-- bloc recruteur -->
+      <div *ngIf="role() === 'recruteur'" formGroupName="recruteur" class="grid md:grid-cols-2 gap-4">
+        <input placeholder="Entreprise" formControlName="entreprise" class="w-full border border-gray-300 rounded px-3 py-2" />
+        <input placeholder="Service"    formControlName="service"    class="w-full border border-gray-300 rounded px-3 py-2" />
+        <input placeholder="Téléphone"  formControlName="telephone"  class="w-full border border-gray-300 rounded px-3 py-2" />
+        <input placeholder="Site web"   formControlName="site_web"   class="w-full border border-gray-300 rounded px-3 py-2" />
+      </div>
+
+      <!-- bouton submit -->
       <button
         type="submit"
         [disabled]="form.invalid"
-        class="w-full bg-blue-600 text-white rounded py-2 hover:bg-blue-700 transition disabled:bg-blue-300"
+        class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 disabled:bg-blue-300"
       >
-        Inscription
+        Valider l'inscription
       </button>
     </form>
 
-    <p class="text-center text-gray-600 mt-4">
+    <p class="text-center text-gray-600 mt-6">
       Déjà un compte ?
       <a routerLink="/login" class="text-blue-600 hover:underline">Connectez-vous</a>
     </p>
