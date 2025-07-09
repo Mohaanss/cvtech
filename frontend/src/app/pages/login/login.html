@@ -2,19 +2,36 @@
   <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
     <h2 class="text-3xl font-semibold mb-6 text-center">Connexion</h2>
 
-    <form class="space-y-4">
+    <form (ngSubmit)="onLogin()" class="space-y-4">
+      <!-- Message d'erreur -->
+      <div *ngIf="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+        {{ errorMessage }}
+      </div>
+
       <input
         type="email"
         placeholder="Email"
-        class="w-full border border-gray-300 rounded px-3 py-2"
+        [(ngModel)]="email"
+        name="email"
+        required
+        [disabled]="isLoading"
+        class="w-full border border-gray-300 rounded px-3 py-2 disabled:bg-gray-100"
       />
       <input
         type="password"
         placeholder="Mot de passe"
-        class="w-full border border-gray-300 rounded px-3 py-2"
+        [(ngModel)]="password"
+        name="password"
+        required
+        [disabled]="isLoading"
+        class="w-full border border-gray-300 rounded px-3 py-2 disabled:bg-gray-100"
       />
-      <button class="w-full bg-blue-600 text-white rounded py-2 hover:bg-blue-700 transition">
-        Connexion
+      <button 
+        type="submit"
+        [disabled]="isLoading || !email || !password"
+        class="w-full bg-blue-600 text-white rounded py-2 hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed">
+        <span *ngIf="!isLoading">Connexion</span>
+        <span *ngIf="isLoading">Connexion en cours...</span>
       </button>
     </form>
 

@@ -1,13 +1,110 @@
 <nav class="bg-white shadow sticky top-0 z-50">
   <div class="container mx-auto flex justify-between items-center p-4">
+    <!-- Logo -->
     <a routerLink="/" class="text-2xl font-bold text-blue-600">CVTech</a>
-    <ul class="flex space-x-6">
-        <li><a routerLink="/" class="hover:text-blue-600">Accueil</a></li>
+
+    <!-- Navigation principale -->
+    <ul class="hidden md:flex space-x-6 items-center">
+      <li><a routerLink="/" class="hover:text-blue-600">Accueil</a></li>
+      
+      <!-- Si utilisateur connecté -->
+      <ng-container *ngIf="isLoggedIn()">
+        <li><a [routerLink]="getDashboardUrl()" class="hover:text-blue-600">Mon Dashboard</a></li>
+        
+        <!-- Navigation spécifique selon le rôle -->
+        <li *ngIf="getCurrentUser()?.role === 'RECRUTEUR'">
+          <a routerLink="/candidats" class="hover:text-blue-600">Candidats</a>
+        </li>
+        <li *ngIf="getCurrentUser()?.role === 'ALTERNANT'">
+          <a routerLink="/offres" class="hover:text-blue-600">Offres</a>
+        </li>
+      </ng-container>
+
+      <!-- Si utilisateur non connecté -->
+      <ng-container *ngIf="!isLoggedIn()">
         <li><a routerLink="/offres" class="hover:text-blue-600">Offres</a></li>
         <li><a routerLink="/candidats" class="hover:text-blue-600">Candidats</a></li>
         <li><a routerLink="/entreprises" class="hover:text-blue-600">Entreprises</a></li>
-        <li><a routerLink="/register" class="hover:text-blue-600">Inscription</a></li>
-        <li><a routerLink="/apprenti" class="hover:text-blue-600">Apprenti</a></li>
+      </ng-container>
     </ul>
+
+    <!-- Actions utilisateur -->
+    <div class="flex items-center space-x-4">
+      <!-- Si utilisateur non connecté -->
+      <ng-container *ngIf="!isLoggedIn()">
+        <a routerLink="/login" class="text-blue-600 hover:text-blue-800">Connexion</a>
+        <a routerLink="/register" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+          Inscription
+        </a>
+      </ng-container>
+
+      <!-- Si utilisateur connecté -->
+      <ng-container *ngIf="isLoggedIn()">
+        <!-- Nom de l'utilisateur et info tokens -->
+        <div class="text-gray-700 text-sm">
+          <div>{{ getUserDisplayName() }}</div>
+          <div class="text-xs text-gray-500">Access: 30s | Refresh: 2min</div>
+        </div>
+        
+        <!-- Bouton de test JWT -->
+        <button 
+          (click)="testEndpoint()" 
+          class="bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition text-sm">
+          🧪 Test JWT
+        </button>
+        
+        <!-- Bouton de déconnexion -->
+        <button 
+          (click)="logout()" 
+          class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
+          Déconnexion
+        </button>
+      </ng-container>
+
+      <!-- Menu mobile toggle -->
+      <button (click)="toggleMenu()" class="md:hidden">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Menu mobile -->
+  <div *ngIf="open" class="md:hidden bg-white border-t">
+    <div class="px-4 py-2 space-y-2">
+      <a routerLink="/" class="block hover:text-blue-600 py-2">Accueil</a>
+      
+      <!-- Si utilisateur connecté -->
+      <ng-container *ngIf="isLoggedIn()">
+        <a [routerLink]="getDashboardUrl()" class="block hover:text-blue-600 py-2">Mon Dashboard</a>
+        <a *ngIf="getCurrentUser()?.role === 'RECRUTEUR'" routerLink="/candidats" class="block hover:text-blue-600 py-2">Candidats</a>
+        <a *ngIf="getCurrentUser()?.role === 'ALTERNANT'" routerLink="/offres" class="block hover:text-blue-600 py-2">Offres</a>
+        
+        <div class="pt-2 border-t">
+          <div class="text-gray-700 py-2">{{ getUserDisplayName() }}</div>
+          <button (click)="testEndpoint()" class="w-full text-left text-green-600 py-2">
+            🧪 Test JWT
+          </button>
+          <button (click)="logout()" class="w-full text-left text-red-600 py-2">
+            Déconnexion
+          </button>
+        </div>
+      </ng-container>
+
+      <!-- Si utilisateur non connecté -->
+      <ng-container *ngIf="!isLoggedIn()">
+        <a routerLink="/offres" class="block hover:text-blue-600 py-2">Offres</a>
+        <a routerLink="/candidats" class="block hover:text-blue-600 py-2">Candidats</a>
+        <a routerLink="/entreprises" class="block hover:text-blue-600 py-2">Entreprises</a>
+        
+        <div class="pt-2 border-t space-y-2">
+          <a routerLink="/login" class="block text-blue-600 py-2">Connexion</a>
+          <a routerLink="/register" class="block bg-blue-600 text-white px-4 py-2 rounded-lg text-center">
+            Inscription
+          </a>
+        </div>
+      </ng-container>
+    </div>
   </div>
 </nav>

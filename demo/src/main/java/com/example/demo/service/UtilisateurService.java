@@ -6,6 +6,8 @@ import com.example.demo.dto.CreateEcoleDto;
 import com.example.demo.dto.CreateRecruteurDto;
 import com.example.demo.dto.LoginDto;
 import com.example.demo.dto.LoginResponseDto;
+import com.example.demo.dto.RefreshTokenRequestDto;
+import com.example.demo.dto.RefreshTokenResponseDto;
 import com.example.demo.dto.UtilisateurResponseDto;
 import com.example.demo.exception.EmailAlreadyExistsException;
 import com.example.demo.exception.UtilisateurNotFoundException;
@@ -32,6 +34,7 @@ public class UtilisateurService {
     private final EcoleProfileRepository ecoleProfileRepository;
     private final RecruteurProfileRepository recruteurProfileRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public List<UtilisateurResponseDto> getAllUtilisateurs() {
         return utilisateurRepository.findAll().stream()
@@ -155,13 +158,63 @@ public class UtilisateurService {
             return new LoginResponseDto("Email ou mot de passe incorrect");
         }
         
-        // Connexion réussie
+        // Générer les tokens JWT
+        String accessToken = jwtService.generateAccessToken(
+            utilisateur.getId(), 
+            utilisateur.getEmail(), 
+            utilisateur.getRole()
+        );
+        String refreshToken = jwtService.generateRefreshToken(
+            utilisateur.getId(), 
+            utilisateur.getEmail()
+        );
+        
+        // Connexion réussie avec tokens
         return new LoginResponseDto(
             utilisateur.getId(),
             utilisateur.getEmail(),
             utilisateur.getRole(),
-            utilisateur.getDateCreation()
+            utilisateur.getDateCreation(),
+            accessToken,
+            refreshToken,
+            30000L // 30 secondes en millisecondes
         );
+    }
+
+    public RefreshTokenResponseDto refreshToken(RefreshTokenRequestDto request) {
+        try {
+            String refreshToken = request.getRefreshToken();
+            
+            // Vérifier que c'est un refresh token valide
+            if (!jwtService.isRefreshToken(refreshToken) || jwtService.isTokenExpired(refreshToken)) {
+                return new RefreshTokenResponseDto("Token de rafraîchissement invalide ou expiré");
+            }
+            
+            // Extraire les informations du refresh token
+            String email = jwtService.extractEmail(refreshToken);
+            Long userId = jwtService.extractUserId(refreshToken);
+            
+            // Vérifier que l'utilisateur existe toujours
+            Optional<Utilisateur> utilisateurOpt = utilisateurRepository.findByEmail(email);
+            if (utilisateurOpt.isEmpty()) {
+                return new RefreshTokenResponseDto("Utilisateur non trouvé");
+            }
+            
+            Utilisateur utilisateur = utilisateurOpt.get();
+            
+            // Générer de nouveaux tokens
+            String newAccessToken = jwtService.generateAccessToken(
+                userId, 
+                email, 
+                utilisateur.getRole()
+            );
+            String newRefreshToken = jwtService.generateRefreshToken(userId, email);
+            
+            return new RefreshTokenResponseDto(newAccessToken, newRefreshToken, 30000L);
+            
+        } catch (Exception e) {
+            return new RefreshTokenResponseDto("Erreur lors du rafraîchissement du token");
+        }
     }
 
     public void deleteUtilisateur(Long id) {
