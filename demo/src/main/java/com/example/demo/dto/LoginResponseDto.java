@@ -19,13 +19,20 @@ public class LoginResponseDto {
     private ZonedDateTime dateCreation;
     private String message;
     private boolean success;
+    private String accessToken;
+    private String refreshToken;
+    private long accessTokenExpiresIn;
 
-    // Constructeur pour succès
-    public LoginResponseDto(Long id, String email, UserRole role, ZonedDateTime dateCreation) {
+    // Constructeur pour succès avec tokens
+    public LoginResponseDto(Long id, String email, UserRole role, ZonedDateTime dateCreation, 
+                           String accessToken, String refreshToken, long accessTokenExpiresIn) {
         this.id = id;
         this.email = email;
         this.role = role;
         this.dateCreation = dateCreation;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+        this.accessTokenExpiresIn = accessTokenExpiresIn;
         this.success = true;
         this.message = "Connexion réussie";
     }

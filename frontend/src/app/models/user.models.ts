@@ -16,6 +16,21 @@ export interface LoginResponseDto {
   dateCreation?: string;
   message: string;
   success: boolean;
+  accessToken?: string;
+  refreshToken?: string;
+  accessTokenExpiresIn?: number;
+}
+
+export interface RefreshTokenRequestDto {
+  refreshToken: string;
+}
+
+export interface RefreshTokenResponseDto {
+  accessToken?: string;
+  refreshToken?: string;
+  accessTokenExpiresIn?: number;
+  success: boolean;
+  message: string;
 }
 
 export interface CreateAlternantDto {

@@ -6,6 +6,8 @@ import com.example.demo.dto.CreateEcoleDto;
 import com.example.demo.dto.CreateRecruteurDto;
 import com.example.demo.dto.LoginDto;
 import com.example.demo.dto.LoginResponseDto;
+import com.example.demo.dto.RefreshTokenRequestDto;
+import com.example.demo.dto.RefreshTokenResponseDto;
 import com.example.demo.dto.UtilisateurResponseDto;
 import com.example.demo.service.UtilisateurService;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
 
@@ -62,6 +65,17 @@ public class UtilisateurController {
         }
     }
 
+    @PostMapping("/refresh-token")
+    public ResponseEntity<RefreshTokenResponseDto> refreshToken(@Valid @RequestBody RefreshTokenRequestDto request) {
+        RefreshTokenResponseDto response = utilisateurService.refreshToken(request);
+        
+        if (response.isSuccess()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+    }
+
     @PostMapping("/alternant")
     public ResponseEntity<UtilisateurResponseDto> createAlternant(@Valid @RequestBody CreateAlternantDto dto) {
         UtilisateurResponseDto utilisateur = utilisateurService.createAlternant(dto);
@@ -79,6 +93,27 @@ public class UtilisateurController {
     public ResponseEntity<UtilisateurResponseDto> createRecruteur(@Valid @RequestBody CreateRecruteurDto dto) {
         UtilisateurResponseDto utilisateur = utilisateurService.createRecruteur(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(utilisateur);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UtilisateurResponseDto> getCurrentUserInfo(HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute("userId");
+        System.out.println("🔍 Endpoint /me appelé - userId: " + userId);
+        
+        if (userId != null) {
+            try {
+                UtilisateurResponseDto utilisateur = utilisateurService.getUtilisateurById(userId);
+                System.out.println("✅ Utilisateur trouvé: " + utilisateur);
+                return ResponseEntity.ok(utilisateur);
+            } catch (Exception e) {
+                System.out.println("❌ Erreur lors de la récupération de l'utilisateur: " + e.getMessage());
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+        } else {
+            System.out.println("❌ userId est null - pas d'authentification");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     @DeleteMapping("/{id}")
