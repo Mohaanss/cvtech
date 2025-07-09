@@ -1,6 +1,7 @@
 package com.example.demo.config;
 
 import com.example.demo.security.JwtAuthenticationFilter;
+import com.example.demo.security.RateLimitFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,9 +21,11 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final RateLimitFilter rateLimitFilter;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, RateLimitFilter rateLimitFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.rateLimitFilter = rateLimitFilter;
     }
 
     @Bean
@@ -42,8 +45,10 @@ public class SecurityConfig {
                 .requestMatchers("/api/utilisateurs/alternant").permitAll() // Permet l'inscription alternant
                 .requestMatchers("/api/utilisateurs/ecole").permitAll() // Permet l'inscription école
                 .requestMatchers("/api/utilisateurs/recruteur").permitAll() // Permet l'inscription recruteur
+                .requestMatchers("/api/test/**").permitAll() // Endpoints de test
                 .anyRequest().authenticated() // Autres routes nécessitent une authentification
             )
+            .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class) // Ajoute le filtre rate limiting
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // Ajoute le filtre JWT
         
         return http.build();

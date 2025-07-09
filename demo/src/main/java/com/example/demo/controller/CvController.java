@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.CvUploadDto;
 import com.example.demo.dto.CvResponseDto;
 import com.example.demo.service.AlternantProfileService;
+import com.example.demo.service.RateLimitService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,9 +17,11 @@ import org.springframework.web.bind.annotation.*;
 public class CvController {
     
     private final AlternantProfileService alternantProfileService;
+    private final RateLimitService rateLimitService;
     
-    public CvController(AlternantProfileService alternantProfileService) {
+    public CvController(AlternantProfileService alternantProfileService, RateLimitService rateLimitService) {
         this.alternantProfileService = alternantProfileService;
+        this.rateLimitService = rateLimitService;
     }
     
     /**
@@ -31,6 +34,12 @@ public class CvController {
             Long userId = (Long) request.getAttribute("userId");
             if (userId == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            
+            // Rate limiting spécifique pour l'upload de CV
+            if (!rateLimitService.tryConsumeCvUpload(userId.toString())) {
+                return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                    .body(new CvResponseDto(null, null, null, null, false));
             }
             
             CvResponseDto response = alternantProfileService.uploadCv(userId, cvUploadDto);

@@ -1,0 +1,77 @@
+<div class="bg-white shadow-xl rounded-xl p-6">
+  <h2 class="text-2xl font-bold text-gray-800 mb-6">Statistiques CV</h2>
+
+  <div *ngIf="loading" class="text-center py-8">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+    <p class="text-gray-600 mt-2">Chargement...</p>
+  </div>
+
+  <div *ngIf="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+    {{ error }}
+  </div>
+
+  <div *ngIf="cvInfo && !loading" class="space-y-6">
+    <!-- Statut du CV -->
+    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+      <div class="flex items-center space-x-3">
+        <div class="w-3 h-3 rounded-full" [class]="cvInfo.hasCv ? 'bg-green-500' : 'bg-red-500'"></div>
+        <span class="font-medium">
+          {{ cvInfo.hasCv ? 'CV disponible' : 'Aucun CV uploadé' }}
+        </span>
+      </div>
+      <span class="text-sm text-gray-500">
+        {{ cvInfo.hasCv ? '✅' : '❌' }}
+      </span>
+    </div>
+
+    <!-- Informations du CV -->
+    <div *ngIf="cvInfo.hasCv" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="bg-blue-50 p-4 rounded-lg">
+        <h3 class="font-semibold text-blue-800 mb-2">📄 Fichier</h3>
+        <p class="text-blue-700">{{ cvInfo.cvNomFichier }}</p>
+      </div>
+      
+      <div class="bg-green-50 p-4 rounded-lg">
+        <h3 class="font-semibold text-green-800 mb-2">📅 Date d'upload</h3>
+        <p class="text-green-700">{{ getUploadDate() }}</p>
+      </div>
+      
+      <div class="bg-purple-50 p-4 rounded-lg">
+        <h3 class="font-semibold text-purple-800 mb-2">💾 Taille</h3>
+        <p class="text-purple-700">{{ getFileSize() }}</p>
+      </div>
+      
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h3 class="font-semibold text-orange-800 mb-2">👁️ Vues</h3>
+        <p class="text-orange-700">0 (à venir)</p>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div *ngIf="cvInfo.hasCv" class="flex flex-wrap gap-3 pt-4">
+      <button (click)="downloadCv()"
+              class="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+        <span>📥</span>
+        <span>Télécharger</span>
+      </button>
+      
+      <button (click)="deleteCv()"
+              class="flex items-center space-x-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+        <span>🗑️</span>
+        <span>Supprimer</span>
+      </button>
+    </div>
+
+    <!-- Message si pas de CV -->
+    <div *ngIf="!cvInfo.hasCv" class="text-center py-8">
+      <div class="text-6xl mb-4">📄</div>
+      <h3 class="text-xl font-semibold text-gray-700 mb-2">Aucun CV uploadé</h3>
+      <p class="text-gray-500 mb-4">Uploadez votre CV pour commencer à être visible par les recruteurs</p>
+      <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+        <p class="text-yellow-800 text-sm">
+          💡 <strong>Conseil :</strong> Un CV à jour augmente vos chances d'être contacté par les recruteurs
+        </p>
+      </div>
+    </div>
+  </div>
+</div> 

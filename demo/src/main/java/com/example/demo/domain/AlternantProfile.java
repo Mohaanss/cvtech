@@ -1,6 +1,7 @@
 package com.example.demo.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "alternant_profile")
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

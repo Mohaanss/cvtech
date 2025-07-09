@@ -121,4 +121,29 @@ public class AlternantProfileService {
         
         alternantProfileRepository.save(profile);
     }
+
+    /**
+     * Récupérer le profil d'un alternant par son ID utilisateur
+     */
+    public AlternantProfile getProfileByUserId(Long utilisateurId) {
+        return alternantProfileRepository.findByUtilisateurId(utilisateurId)
+            .orElseThrow(() -> new RuntimeException("Profil alternant non trouvé"));
+    }
+
+    /**
+     * Mettre à jour le profil d'un alternant
+     */
+    public AlternantProfile updateProfile(Long utilisateurId, AlternantProfile updatedProfile) {
+        AlternantProfile existingProfile = alternantProfileRepository.findByUtilisateurId(utilisateurId)
+            .orElseThrow(() -> new RuntimeException("Profil alternant non trouvé"));
+        
+        // Mettre à jour les champs modifiables
+        existingProfile.setNom(updatedProfile.getNom());
+        existingProfile.setPrenom(updatedProfile.getPrenom());
+        existingProfile.setTelephone(updatedProfile.getTelephone());
+        existingProfile.setVille(updatedProfile.getVille());
+        existingProfile.setLienLinkedin(updatedProfile.getLienLinkedin());
+        
+        return alternantProfileRepository.save(existingProfile);
+    }
 } 

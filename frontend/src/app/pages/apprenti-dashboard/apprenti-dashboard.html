@@ -6,7 +6,15 @@
     <div class="flex justify-center mb-8">
       <div class="bg-white rounded-lg shadow-sm p-1">
         <button 
-          (click)="activeTab = 'cv'" 
+          (click)="setActiveTab('overview')" 
+          [class.bg-blue-600]="activeTab === 'overview'"
+          [class.text-white]="activeTab === 'overview'"
+          [class.text-gray-700]="activeTab !== 'overview'"
+          class="px-6 py-2 rounded-md transition-colors">
+          📊 Vue d'ensemble
+        </button>
+        <button 
+          (click)="setActiveTab('cv')" 
           [class.bg-blue-600]="activeTab === 'cv'"
           [class.text-white]="activeTab === 'cv'"
           [class.text-gray-700]="activeTab !== 'cv'"
@@ -14,26 +22,58 @@
           📄 Gestion CV
         </button>
         <button 
-          (click)="activeTab = 'profile'" 
+          (click)="setActiveTab('profile')" 
           [class.bg-blue-600]="activeTab === 'profile'"
           [class.text-white]="activeTab === 'profile'"
           [class.text-gray-700]="activeTab !== 'profile'"
           class="px-6 py-2 rounded-md transition-colors">
           👤 Mon Profil
         </button>
+        <button 
+          (click)="setActiveTab('notifications')" 
+          [class.bg-blue-600]="activeTab === 'notifications'"
+          [class.text-white]="activeTab === 'notifications'"
+          [class.text-gray-700]="activeTab !== 'notifications'"
+          class="px-6 py-2 rounded-md transition-colors">
+          📢 Notifications
+        </button>
       </div>
     </div>
 
-    <!-- Contenu des onglets -->
+    <!-- Vue d'ensemble -->
+    <div *ngIf="activeTab === 'overview'" class="space-y-6">
+      <!-- Grille principale -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Profil -->
+        <div class="lg:col-span-2">
+          <app-profile-card></app-profile-card>
+        </div>
+        
+        <!-- Statistiques CV -->
+        <div>
+          <app-cv-stats></app-cv-stats>
+        </div>
+      </div>
+      
+      <!-- Notifications récentes -->
+      <div class="lg:col-span-3">
+        <app-notifications></app-notifications>
+      </div>
+    </div>
+
+    <!-- Gestion CV -->
     <div *ngIf="activeTab === 'cv'">
       <app-cv-upload></app-cv-upload>
     </div>
 
-    <div *ngIf="activeTab === 'profile'" class="max-w-2xl mx-auto">
-      <div class="bg-white shadow-xl rounded-xl p-8">
-        <h2 class="text-2xl font-bold mb-6 text-center">Mon Profil</h2>
-        <p class="text-gray-600 text-center">Fonctionnalité en cours de développement...</p>
-      </div>
+    <!-- Profil détaillé -->
+    <div *ngIf="activeTab === 'profile'" class="max-w-4xl mx-auto">
+      <app-profile-card></app-profile-card>
+    </div>
+
+    <!-- Notifications -->
+    <div *ngIf="activeTab === 'notifications'" class="max-w-4xl mx-auto">
+      <app-notifications></app-notifications>
     </div>
   </div>
 </div>
