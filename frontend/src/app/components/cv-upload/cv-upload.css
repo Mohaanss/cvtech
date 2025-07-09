@@ -1,0 +1,59 @@
+.cv-upload-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.cv-upload-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 32px;
+}
+
+/* Animation pour le drag and drop */
+.border-dashed {
+  transition: all 0.2s ease-in-out;
+}
+
+.border-dashed:hover {
+  border-color: #3b82f6;
+  background-color: #f8fafc;
+}
+
+/* Style pour le fichier sélectionné */
+.bg-blue-50 {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .cv-upload-container {
+    padding: 10px;
+  }
+  
+  .cv-upload-card {
+    padding: 20px;
+  }
+  
+  .flex.items-center.justify-between {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .flex.space-x-2 {
+    width: 100%;
+    justify-content: center;
+  }
+} 

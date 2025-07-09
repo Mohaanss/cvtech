@@ -1,28 +1,39 @@
-<div class="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-  <div class="bg-white shadow-xl rounded-xl p-8 w-full max-w-lg">
-    <h2 class="text-2xl font-bold mb-6 text-center">Espace Apprenti</h2>
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="container mx-auto px-4">
+    <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">Espace Apprenti</h1>
+    
+    <!-- Navigation des onglets -->
+    <div class="flex justify-center mb-8">
+      <div class="bg-white rounded-lg shadow-sm p-1">
+        <button 
+          (click)="activeTab = 'cv'" 
+          [class.bg-blue-600]="activeTab === 'cv'"
+          [class.text-white]="activeTab === 'cv'"
+          [class.text-gray-700]="activeTab !== 'cv'"
+          class="px-6 py-2 rounded-md transition-colors">
+          📄 Gestion CV
+        </button>
+        <button 
+          (click)="activeTab = 'profile'" 
+          [class.bg-blue-600]="activeTab === 'profile'"
+          [class.text-white]="activeTab === 'profile'"
+          [class.text-gray-700]="activeTab !== 'profile'"
+          class="px-6 py-2 rounded-md transition-colors">
+          👤 Mon Profil
+        </button>
+      </div>
+    </div>
 
-    <label
-      for="cvInput"
-      class="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-lg cursor-pointer
-             hover:bg-gray-100">
-      <span class="text-gray-500">
-        {{ fileName() ? 'Fichier sélectionné : ' + fileName() : 'Clique ou dépose ton CV (PDF / DOCX, 5 Mo max)' }}
-      </span>
-    </label>
-    <input id="cvInput" type="file" accept=".pdf,.doc,.docx"
-           class="hidden" (change)="onFileChange($event)" />
+    <!-- Contenu des onglets -->
+    <div *ngIf="activeTab === 'cv'">
+      <app-cv-upload></app-cv-upload>
+    </div>
 
-    <button
-      class="mt-6 w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 disabled:bg-blue-300"
-      [disabled]="!fileName()"
-      (click)="upload()">
-      Envoyer mon CV
-    </button>
-
-    <p class="mt-4 text-center text-sm" [ngClass]="{'text-green-600': message()?.startsWith('✅'),
-                                                   'text-red-600':  message()?.startsWith('⛔')}">
-      {{ message() }}
-    </p>
+    <div *ngIf="activeTab === 'profile'" class="max-w-2xl mx-auto">
+      <div class="bg-white shadow-xl rounded-xl p-8">
+        <h2 class="text-2xl font-bold mb-6 text-center">Mon Profil</h2>
+        <p class="text-gray-600 text-center">Fonctionnalité en cours de développement...</p>
+      </div>
+    </div>
   </div>
 </div>
