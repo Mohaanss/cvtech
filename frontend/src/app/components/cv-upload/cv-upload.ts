@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { CvService } from '../../services/cv.service';
-import { CvUploadDto, CvResponseDto } from '../../models/cv.models';
+import { CvResponseDto } from '../../models/cv.models';
 
 @Component({
   selector: 'app-cv-upload',
@@ -71,31 +71,19 @@ export class CvUploadComponent implements OnInit {
     this.errorMessage = '';
     this.successMessage = '';
 
-    this.cvService.fileToBase64(this.selectedFile).then(base64 => {
-      const cvUploadDto: CvUploadDto = {
-        cvBase64: base64,
-        nomFichier: this.selectedFile!.name,
-        typeFichier: 'application/pdf'
-      };
-
-      this.cvService.uploadCv(cvUploadDto).subscribe({
-        next: (response) => {
-          this.isUploading = false;
-          this.successMessage = 'CV uploadé avec succès !';
-          this.selectedFile = null;
-          this.loadCvInfo(); // Recharger les infos
-          console.log('✅ CV uploadé avec succès:', response);
-        },
-        error: (error) => {
-          this.isUploading = false;
-          this.errorMessage = 'Erreur lors de l\'upload du CV';
-          console.error('❌ Erreur upload CV:', error);
-        }
-      });
-    }).catch(error => {
-      this.isUploading = false;
-      this.errorMessage = 'Erreur lors de la conversion du fichier';
-      console.error('❌ Erreur conversion fichier:', error);
+    this.cvService.uploadCv(this.selectedFile).subscribe({
+      next: (response) => {
+        this.isUploading = false;
+        this.successMessage = 'CV uploadé avec succès !';
+        this.selectedFile = null;
+        this.loadCvInfo(); // Recharger les infos
+        console.log('✅ CV uploadé avec succès:', response);
+      },
+      error: (error) => {
+        this.isUploading = false;
+        this.errorMessage = 'Erreur lors de l\'upload du CV';
+        console.error('❌ Erreur upload CV:', error);
+      }
     });
   }
 

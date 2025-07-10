@@ -177,7 +177,7 @@ public class UtilisateurService {
             utilisateur.getDateCreation(),
             accessToken,
             refreshToken,
-            30000L // 30 secondes en millisecondes
+            3600000L // 1 heure en millisecondes
         );
     }
 
@@ -210,7 +210,7 @@ public class UtilisateurService {
             );
             String newRefreshToken = jwtService.generateRefreshToken(userId, email);
             
-            return new RefreshTokenResponseDto(newAccessToken, newRefreshToken, 30000L);
+            return new RefreshTokenResponseDto(newAccessToken, newRefreshToken, 3600000L);
             
         } catch (Exception e) {
             return new RefreshTokenResponseDto("Erreur lors du rafraîchissement du token");
@@ -222,6 +222,29 @@ public class UtilisateurService {
             throw new UtilisateurNotFoundException("Utilisateur non trouvé avec l'ID : " + id);
         }
         utilisateurRepository.deleteById(id);
+    }
+
+    /**
+     * Réinitialiser le mot de passe d'un utilisateur
+     */
+    public boolean resetPassword(String email, String newPassword) {
+        try {
+            Optional<Utilisateur> utilisateurOpt = utilisateurRepository.findByEmail(email);
+            if (utilisateurOpt.isEmpty()) {
+                return false;
+            }
+            
+            Utilisateur utilisateur = utilisateurOpt.get();
+            utilisateur.setMotDePasseHash(passwordEncoder.encode(newPassword));
+            utilisateurRepository.save(utilisateur);
+            
+            System.out.println("✅ Mot de passe réinitialisé pour: " + email);
+            return true;
+            
+        } catch (Exception e) {
+            System.err.println("❌ Erreur lors de la réinitialisation du mot de passe: " + e.getMessage());
+            return false;
+        }
     }
 
     private UtilisateurResponseDto convertToDto(Utilisateur utilisateur) {

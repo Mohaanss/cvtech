@@ -2,7 +2,7 @@ import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
-import { CvUploadDto, CvResponseDto } from '../models/cv.models';
+import { CvResponseDto } from '../models/cv.models';
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +25,11 @@ export class CvService {
   /**
    * Upload d'un CV
    */
-  uploadCv(cvUploadDto: CvUploadDto): Observable<CvResponseDto> {
-    return this.http.post<CvResponseDto>(`${this.API_URL}/upload`, cvUploadDto);
+  uploadCv(file: File): Observable<CvResponseDto> {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    return this.http.post<CvResponseDto>(`${this.API_URL}/upload`, formData);
   }
 
   /**
@@ -51,28 +54,6 @@ export class CvService {
   }
 
   /**
-   * Convertir un fichier en base64
-   */
-  fileToBase64(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      if (!this.isBrowser()) {
-        reject(new Error('Cette fonction n\'est disponible que côté client'));
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        const result = reader.result as string;
-        // Enlever le préfixe "data:application/pdf;base64,"
-        const base64 = result.split(',')[1];
-        resolve(base64);
-      };
-      reader.onerror = error => reject(error);
-    });
-  }
-
-  /**
    * Valider un fichier PDF
    */
   validatePdfFile(file: File): { valid: boolean; message?: string } {
@@ -81,10 +62,10 @@ export class CvService {
       return { valid: false, message: 'Seuls les fichiers PDF sont acceptés' };
     }
 
-    // Vérifier la taille (max 5MB)
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    // Vérifier la taille (max 10MB)
+    const maxSize = 10 * 1024 * 1024; // 10MB
     if (file.size > maxSize) {
-      return { valid: false, message: 'Le fichier est trop volumineux (max 5MB)' };
+      return { valid: false, message: 'Le fichier est trop volumineux (max 10MB)' };
     }
 
     return { valid: true };

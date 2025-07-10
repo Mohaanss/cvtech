@@ -158,4 +158,22 @@ export class AuthService {
   testProtectedEndpoint(): Observable<UtilisateurResponseDto> {
     return this.http.get<UtilisateurResponseDto>(`${this.API_URL}/me`);
   }
+
+  /**
+   * Demande de réinitialisation de mot de passe
+   */
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post<any>('http://localhost:8081/api/password/forgot', { email });
+  }
+
+  /**
+   * Réinitialisation du mot de passe avec token
+   */
+  resetPassword(token: string, newPassword: string, confirmPassword: string): Observable<any> {
+    return this.http.post<any>('http://localhost:8081/api/password/reset', {
+      token,
+      newPassword,
+      confirmPassword
+    });
+  }
 } 

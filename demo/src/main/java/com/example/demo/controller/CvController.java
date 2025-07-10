@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.CvUploadDto;
 import com.example.demo.dto.CvResponseDto;
 import com.example.demo.service.AlternantProfileService;
 import com.example.demo.service.RateLimitService;
@@ -10,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/cv")
@@ -28,7 +28,7 @@ public class CvController {
      * Upload du CV d'un alternant
      */
     @PostMapping("/upload")
-    public ResponseEntity<CvResponseDto> uploadCv(@RequestBody CvUploadDto cvUploadDto, 
+    public ResponseEntity<CvResponseDto> uploadCv(@RequestParam("file") MultipartFile file, 
                                                  HttpServletRequest request) {
         try {
             Long userId = (Long) request.getAttribute("userId");
@@ -42,7 +42,7 @@ public class CvController {
                     .body(new CvResponseDto(null, null, null, null, false));
             }
             
-            CvResponseDto response = alternantProfileService.uploadCv(userId, cvUploadDto);
+            CvResponseDto response = alternantProfileService.uploadCv(userId, file);
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
@@ -80,8 +80,7 @@ public class CvController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
             
-            String cvBase64 = alternantProfileService.downloadCv(userId);
-            byte[] cvBytes = java.util.Base64.getDecoder().decode(cvBase64);
+            byte[] cvBytes = alternantProfileService.downloadCv(userId);
             
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);

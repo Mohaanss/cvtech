@@ -45,11 +45,11 @@ public class AlternantProfile {
     @Column(name = "date_naissance")
     private LocalDate dateNaissance;
     
-    @Column(name = "cv_base64", columnDefinition = "TEXT")
-    private String cvBase64;
-    
     @Column(name = "cv_nom_fichier")
     private String cvNomFichier;
+    
+    @Column(name = "cv_original_name")
+    private String cvOriginalName;
     
     @Column(name = "cv_date_upload")
     private LocalDate cvDateUpload;

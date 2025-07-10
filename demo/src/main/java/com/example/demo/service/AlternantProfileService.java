@@ -2,15 +2,15 @@ package com.example.demo.service;
 
 import com.example.demo.domain.AlternantProfile;
 import com.example.demo.domain.Utilisateur;
-import com.example.demo.dto.CvUploadDto;
+import com.example.demo.dto.CvFileUploadDto;
 import com.example.demo.dto.CvResponseDto;
 import com.example.demo.repository.AlternantProfileRepository;
 import com.example.demo.repository.UtilisateurRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.util.Base64;
 
 @Service
 @Transactional
@@ -18,17 +18,20 @@ public class AlternantProfileService {
     
     private final AlternantProfileRepository alternantProfileRepository;
     private final UtilisateurRepository utilisateurRepository;
+    private final FileStorageService fileStorageService;
     
     public AlternantProfileService(AlternantProfileRepository alternantProfileRepository,
-                                 UtilisateurRepository utilisateurRepository) {
+                                 UtilisateurRepository utilisateurRepository,
+                                 FileStorageService fileStorageService) {
         this.alternantProfileRepository = alternantProfileRepository;
         this.utilisateurRepository = utilisateurRepository;
+        this.fileStorageService = fileStorageService;
     }
     
     /**
      * Upload du CV d'un alternant
      */
-    public CvResponseDto uploadCv(Long utilisateurId, CvUploadDto cvUploadDto) {
+    public CvResponseDto uploadCv(Long utilisateurId, MultipartFile file) {
         // Vérifier que l'utilisateur existe et est un alternant
         Utilisateur utilisateur = utilisateurRepository.findById(utilisateurId)
             .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
@@ -37,18 +40,8 @@ public class AlternantProfileService {
             throw new RuntimeException("Seuls les alternants peuvent uploader un CV");
         }
         
-        // Vérifier que le fichier est un PDF
-        if (!"application/pdf".equals(cvUploadDto.getTypeFichier())) {
-            throw new RuntimeException("Seuls les fichiers PDF sont acceptés");
-        }
-        
-        // Vérifier la taille du fichier (max 5MB)
-        if (cvUploadDto.getCvBase64() != null) {
-            int sizeInBytes = cvUploadDto.getCvBase64().length() * 3 / 4; // Approximation
-            if (sizeInBytes > 5 * 1024 * 1024) { // 5MB
-                throw new RuntimeException("Le fichier est trop volumineux (max 5MB)");
-            }
-        }
+        // Stocker le fichier sur le disque
+        String storedFileName = fileStorageService.storeFile(file);
         
         // Récupérer ou créer le profil alternant
         AlternantProfile profile = alternantProfileRepository.findByUtilisateurId(utilisateurId)
@@ -58,16 +51,21 @@ public class AlternantProfileService {
                 return newProfile;
             });
         
+        // Supprimer l'ancien fichier s'il existe
+        if (profile.getCvNomFichier() != null) {
+            fileStorageService.deleteFile(profile.getCvNomFichier());
+        }
+        
         // Mettre à jour le CV
-        profile.setCvBase64(cvUploadDto.getCvBase64());
-        profile.setCvNomFichier(cvUploadDto.getNomFichier());
+        profile.setCvNomFichier(storedFileName);
+        profile.setCvOriginalName(file.getOriginalFilename());
         profile.setCvDateUpload(LocalDate.now());
         
         AlternantProfile savedProfile = alternantProfileRepository.save(profile);
         
         return new CvResponseDto(
             savedProfile.getId(),
-            savedProfile.getCvNomFichier(),
+            savedProfile.getCvOriginalName(),
             "application/pdf",
             savedProfile.getCvDateUpload(),
             true
@@ -81,13 +79,13 @@ public class AlternantProfileService {
         AlternantProfile profile = alternantProfileRepository.findByUtilisateurId(utilisateurId)
             .orElse(null);
             
-        if (profile == null || profile.getCvBase64() == null) {
+        if (profile == null || profile.getCvNomFichier() == null) {
             return new CvResponseDto(null, null, null, null, false);
         }
         
         return new CvResponseDto(
             profile.getId(),
-            profile.getCvNomFichier(),
+            profile.getCvOriginalName(),
             "application/pdf",
             profile.getCvDateUpload(),
             true
@@ -97,15 +95,15 @@ public class AlternantProfileService {
     /**
      * Télécharger le CV d'un alternant
      */
-    public String downloadCv(Long utilisateurId) {
+    public byte[] downloadCv(Long utilisateurId) {
         AlternantProfile profile = alternantProfileRepository.findByUtilisateurId(utilisateurId)
             .orElseThrow(() -> new RuntimeException("CV non trouvé"));
             
-        if (profile.getCvBase64() == null) {
+        if (profile.getCvNomFichier() == null) {
             throw new RuntimeException("Aucun CV uploadé");
         }
         
-        return profile.getCvBase64();
+        return fileStorageService.loadFileAsBytes(profile.getCvNomFichier());
     }
     
     /**
@@ -115,8 +113,14 @@ public class AlternantProfileService {
         AlternantProfile profile = alternantProfileRepository.findByUtilisateurId(utilisateurId)
             .orElseThrow(() -> new RuntimeException("Profil alternant non trouvé"));
             
-        profile.setCvBase64(null);
+        // Supprimer le fichier du disque
+        if (profile.getCvNomFichier() != null) {
+            fileStorageService.deleteFile(profile.getCvNomFichier());
+        }
+        
+        // Nettoyer les champs en base
         profile.setCvNomFichier(null);
+        profile.setCvOriginalName(null);
         profile.setCvDateUpload(null);
         
         alternantProfileRepository.save(profile);
@@ -143,6 +147,8 @@ public class AlternantProfileService {
         existingProfile.setTelephone(updatedProfile.getTelephone());
         existingProfile.setVille(updatedProfile.getVille());
         existingProfile.setLienLinkedin(updatedProfile.getLienLinkedin());
+        existingProfile.setLienPortfolio(updatedProfile.getLienPortfolio());
+        existingProfile.setDateNaissance(updatedProfile.getDateNaissance());
         
         return alternantProfileRepository.save(existingProfile);
     }

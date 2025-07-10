@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 public class JwtConfig {
     
     private String secret = "mySecretKey1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private long accessTokenExpiration = 30000; // 30 secondes pour les tests
-    private long refreshTokenExpiration = 120000; // 2 minutes pour les tests
+    private long accessTokenExpiration = 3600000; // 1 heure (3600000 ms)
+    private long refreshTokenExpiration = 2592000000L; // 30 jours (2592000000 ms)
     
     public String getSecret() {
         return secret;

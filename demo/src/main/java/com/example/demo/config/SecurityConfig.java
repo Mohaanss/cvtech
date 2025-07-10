@@ -45,6 +45,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/utilisateurs/alternant").permitAll() // Permet l'inscription alternant
                 .requestMatchers("/api/utilisateurs/ecole").permitAll() // Permet l'inscription école
                 .requestMatchers("/api/utilisateurs/recruteur").permitAll() // Permet l'inscription recruteur
+                .requestMatchers("/api/utilisateurs/forgot-password").permitAll() // Permet l'accès au mot de passe oublié
+                .requestMatchers("/api/password/**").permitAll() // Permet l'accès aux endpoints de mot de passe
                 .requestMatchers("/api/test/**").permitAll() // Endpoints de test
                 .anyRequest().authenticated() // Autres routes nécessitent une authentification
             )
