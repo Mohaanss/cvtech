@@ -62,8 +62,21 @@
     </div>
 
     <!-- Gestion CV -->
-    <div *ngIf="activeTab === 'cv'">
+    <div *ngIf="activeTab === 'cv'" class="space-y-6">
       <app-cv-upload></app-cv-upload>
+      
+      <!-- Bouton pour visualiser le CV -->
+      <div class="max-w-2xl mx-auto">
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h3 class="text-lg font-semibold mb-4">Visualiser mon CV</h3>
+          <p class="text-gray-600 mb-4">Prévisualisez votre CV tel qu'il apparaîtra aux recruteurs.</p>
+          <button 
+            (click)="viewMyCv()"
+            class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
+            👁️ Visualiser mon CV
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Profil détaillé -->
@@ -77,3 +90,10 @@
     </div>
   </div>
 </div>
+
+<!-- Composant de visualisation de CV -->
+<app-cv-viewer 
+  [alternantId]="currentUserId" 
+  [showViewer]="showCvViewer"
+  (viewerClosed)="closeCvViewer()">
+</app-cv-viewer>

@@ -1,10 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { OffreService, Offre } from '../../services/offre.service';
 
 @Component({
   selector: 'app-offres',
   templateUrl: './offres.html',
-  styleUrls: ['./offres.css']
+  styleUrls: ['./offres.css'],
+  standalone: true,
+  imports: [CommonModule, RouterModule]
 })
 export class OffresComponent implements OnInit {
   offres: Offre[] = [];

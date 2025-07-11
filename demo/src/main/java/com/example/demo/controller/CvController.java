@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.CvResponseDto;
 import com.example.demo.service.AlternantProfileService;
 import com.example.demo.service.RateLimitService;
+import com.example.demo.domain.UserRole;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -85,6 +86,43 @@ public class CvController {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
             headers.setContentDispositionFormData("attachment", "cv.pdf");
+            
+            return ResponseEntity.ok()
+                .headers(headers)
+                .body(cvBytes);
+                
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Visualiser le CV d'un alternant (pour iframe)
+     * Accessible par l'alternant lui-même ou par les recruteurs
+     */
+    @GetMapping("/view/{alternantId}")
+    public ResponseEntity<byte[]> viewCv(@PathVariable Long alternantId, HttpServletRequest request) {
+        try {
+            Long userId = (Long) request.getAttribute("userId");
+            UserRole userRole = (UserRole) request.getAttribute("userRole");
+            
+            if (userId == null || userRole == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            
+            // Vérifier les autorisations :
+            // - L'alternant peut voir son propre CV
+            // - Les recruteurs peuvent voir tous les CVs
+            if (!userId.equals(alternantId) && userRole != UserRole.RECRUTEUR) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+            
+            byte[] cvBytes = alternantProfileService.downloadCv(alternantId);
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.set("Content-Disposition", "inline; filename=cv.pdf");
+            headers.set("X-Frame-Options", "SAMEORIGIN"); // Permettre l'affichage en iframe
             
             return ResponseEntity.ok()
                 .headers(headers)

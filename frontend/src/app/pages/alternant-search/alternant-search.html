@@ -20,7 +20,23 @@
         <div><span class="font-semibold">Ville :</span> {{ alt.ville || '-' }}</div>
         <div *ngIf="alt.lienLinkedin"><a [href]="alt.lienLinkedin" target="_blank" class="text-blue-600 hover:underline">LinkedIn</a></div>
         <div *ngIf="alt.lienPortfolio"><a [href]="alt.lienPortfolio" target="_blank" class="text-blue-600 hover:underline">Portfolio</a></div>
+        
+        <!-- Bouton pour visualiser le CV (visible seulement aux recruteurs) -->
+        <div *ngIf="isRecruteur()" class="mt-3">
+          <button 
+            (click)="viewCv(alt.utilisateurId)" 
+            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors">
+            📄 Voir CV
+          </button>
+        </div>
       </div>
     </div>
   </div>
-</div> 
+</div>
+
+<!-- Composant de visualisation de CV -->
+<app-cv-viewer 
+  [alternantId]="selectedAlternantId" 
+  [showViewer]="showCvViewer"
+  (viewerClosed)="closeCvViewer()">
+</app-cv-viewer> 

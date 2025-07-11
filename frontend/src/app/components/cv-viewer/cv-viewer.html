@@ -1,0 +1,25 @@
+<div *ngIf="showViewer" class="cv-viewer-modal">
+  <div class="cv-viewer-container">
+    <div class="cv-viewer-header">
+      <h3>Visualisation du CV</h3>
+      <button class="close-btn" (click)="onClose()">&times;</button>
+    </div>
+    
+    <div class="cv-viewer-content">
+      <div *ngIf="isLoading" class="loading">
+        <p>Chargement du CV...</p>
+      </div>
+      
+      <div *ngIf="error" class="error">
+        <p>{{ error }}</p>
+      </div>
+      
+      <iframe 
+        *ngIf="safePdfUrl && !isLoading && !error"
+        [src]="safePdfUrl"
+        class="pdf-iframe"
+        frameborder="0">
+      </iframe>
+    </div>
+  </div>
+</div> 

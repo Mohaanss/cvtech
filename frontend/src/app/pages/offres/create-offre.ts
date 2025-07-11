@@ -1,11 +1,15 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { OffreService, Offre } from '../../services/offre.service';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-offre',
   templateUrl: './create-offre.html',
-  styleUrls: ['./create-offre.css']
+  styleUrls: ['./create-offre.css'],
+  standalone: true,
+  imports: [CommonModule, FormsModule]
 })
 export class CreateOffreComponent {
   offre: Partial<Offre> = {
