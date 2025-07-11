@@ -53,4 +53,9 @@ public class AlternantProfile {
     
     @Column(name = "cv_date_upload")
     private LocalDate cvDateUpload;
+
+    // Nouveaux champs
+    private String ecole;
+    private String niveauEtude;
+    private String categorieEtude;
 }

@@ -13,7 +13,7 @@
         
         <!-- Navigation spécifique selon le rôle -->
         <li *ngIf="getCurrentUser()?.role === 'RECRUTEUR'">
-          <a routerLink="/candidats" class="hover:text-blue-600">Candidats</a>
+          <a routerLink="/alternants" class="hover:text-blue-600">Candidats</a>
         </li>
         <li *ngIf="getCurrentUser()?.role === 'ALTERNANT'">
           <a routerLink="/offres" class="hover:text-blue-600">Offres</a>
@@ -23,7 +23,7 @@
       <!-- Si utilisateur non connecté -->
       <ng-container *ngIf="!isLoggedIn()">
         <li><a routerLink="/offres" class="hover:text-blue-600">Offres</a></li>
-        <li><a routerLink="/candidats" class="hover:text-blue-600">Candidats</a></li>
+        <li><a routerLink="/alternants" class="hover:text-blue-600">Candidats</a></li>
         <li><a routerLink="/entreprises" class="hover:text-blue-600">Entreprises</a></li>
       </ng-container>
     </ul>
@@ -78,7 +78,7 @@
       <!-- Si utilisateur connecté -->
       <ng-container *ngIf="isLoggedIn()">
         <a [routerLink]="getDashboardUrl()" class="block hover:text-blue-600 py-2">Mon Dashboard</a>
-        <a *ngIf="getCurrentUser()?.role === 'RECRUTEUR'" routerLink="/candidats" class="block hover:text-blue-600 py-2">Candidats</a>
+        <a *ngIf="getCurrentUser()?.role === 'RECRUTEUR'" routerLink="/alternants" class="block hover:text-blue-600 py-2">Candidats</a>
         <a *ngIf="getCurrentUser()?.role === 'ALTERNANT'" routerLink="/offres" class="block hover:text-blue-600 py-2">Offres</a>
         
         <div class="pt-2 border-t">
@@ -95,7 +95,7 @@
       <!-- Si utilisateur non connecté -->
       <ng-container *ngIf="!isLoggedIn()">
         <a routerLink="/offres" class="block hover:text-blue-600 py-2">Offres</a>
-        <a routerLink="/candidats" class="block hover:text-blue-600 py-2">Candidats</a>
+        <a routerLink="/alternants" class="block hover:text-blue-600 py-2">Candidats</a>
         <a routerLink="/entreprises" class="block hover:text-blue-600 py-2">Entreprises</a>
         
         <div class="pt-2 border-t space-y-2">

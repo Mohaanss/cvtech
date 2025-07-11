@@ -15,4 +15,16 @@ public class UtilisateurResponseDto {
     private String email;
     private UserRole role;
     private ZonedDateTime dateCreation;
+    private String ville;
+    private String lienLinkedin;
+    private String lienPortfolio;
+    private String dateNaissance;
+
+    // Nouveaux champs
+    private String ecole;
+    private String niveauEtude;
+    private String categorieEtude;
+    private String nom;
+    private String prenom;
+    private String telephone;
 }

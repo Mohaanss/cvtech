@@ -9,6 +9,7 @@ import com.example.demo.dto.LoginResponseDto;
 import com.example.demo.dto.RefreshTokenRequestDto;
 import com.example.demo.dto.RefreshTokenResponseDto;
 import com.example.demo.dto.UtilisateurResponseDto;
+import com.example.demo.dto.AlternantPublicDto;
 import com.example.demo.service.UtilisateurService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -114,6 +115,12 @@ public class UtilisateurController {
             System.out.println("❌ userId est null - pas d'authentification");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+    }
+
+    @GetMapping("/public/alternants")
+    public ResponseEntity<List<AlternantPublicDto>> getPublicAlternants() {
+        List<AlternantPublicDto> alternants = utilisateurService.getPublicAlternants();
+        return ResponseEntity.ok(alternants);
     }
 
     @DeleteMapping("/{id}")

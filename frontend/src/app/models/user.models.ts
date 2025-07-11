@@ -43,6 +43,9 @@ export interface CreateAlternantDto {
   lienLinkedin?: string;
   lienPortfolio?: string;
   dateNaissance?: string;
+  ecole?: string;
+  niveauEtude?: string;
+  categorieEtude?: string;
 }
 
 export interface CreateEcoleDto {

@@ -1,0 +1,26 @@
+<div class="min-h-screen bg-gray-50 p-8">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-3xl font-semibold mb-6 text-center">Recherche d'alternants</h2>
+    <input
+      type="text"
+      placeholder="Rechercher par nom, prénom, école, catégorie..."
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="filterAlternants()"
+      class="w-full border border-gray-300 rounded px-3 py-2 mb-6"
+    />
+    <div *ngIf="filteredAlternants.length === 0" class="text-center text-gray-500 mt-8">
+      Aucun alternant trouvé.
+    </div>
+    <div class="grid gap-6 md:grid-cols-2">
+      <div *ngFor="let alt of filteredAlternants" class="bg-white shadow rounded-lg p-5 flex flex-col gap-2">
+        <div class="font-bold text-lg">{{ alt.prenom }} {{ alt.nom }}</div>
+        <div><span class="font-semibold">École :</span> {{ alt.ecole || '-' }}</div>
+        <div><span class="font-semibold">Niveau d'étude :</span> {{ alt.niveauEtude || '-' }}</div>
+        <div><span class="font-semibold">Catégorie :</span> {{ alt.categorieEtude || '-' }}</div>
+        <div><span class="font-semibold">Ville :</span> {{ alt.ville || '-' }}</div>
+        <div *ngIf="alt.lienLinkedin"><a [href]="alt.lienLinkedin" target="_blank" class="text-blue-600 hover:underline">LinkedIn</a></div>
+        <div *ngIf="alt.lienPortfolio"><a [href]="alt.lienPortfolio" target="_blank" class="text-blue-600 hover:underline">Portfolio</a></div>
+      </div>
+    </div>
+  </div>
+</div> 

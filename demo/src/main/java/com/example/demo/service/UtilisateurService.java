@@ -9,6 +9,7 @@ import com.example.demo.dto.LoginResponseDto;
 import com.example.demo.dto.RefreshTokenRequestDto;
 import com.example.demo.dto.RefreshTokenResponseDto;
 import com.example.demo.dto.UtilisateurResponseDto;
+import com.example.demo.dto.AlternantPublicDto;
 import com.example.demo.exception.EmailAlreadyExistsException;
 import com.example.demo.exception.UtilisateurNotFoundException;
 import com.example.demo.repository.AlternantProfileRepository;
@@ -81,7 +82,10 @@ public class UtilisateurService {
                 .ville(dto.getVille())
                 .lienLinkedin(dto.getLienLinkedin())
                 .lienPortfolio(dto.getLienPortfolio())
-                .dateNaissance(dto.getDateNaissance())
+                .dateNaissance(dto.getDateNaissance() != null && !dto.getDateNaissance().isEmpty() ? java.time.LocalDate.parse(dto.getDateNaissance()) : null)
+                .ecole(dto.getEcole())
+                .niveauEtude(dto.getNiveauEtude())
+                .categorieEtude(dto.getCategorieEtude())
                 .build();
 
         alternantProfileRepository.save(profile);
@@ -247,12 +251,42 @@ public class UtilisateurService {
         }
     }
 
+    public List<AlternantPublicDto> getPublicAlternants() {
+        return alternantProfileRepository.findAll().stream()
+            .map(profile -> new AlternantPublicDto(
+                profile.getNom(),
+                profile.getPrenom(),
+                profile.getNiveauEtude(),
+                profile.getEcole(),
+                profile.getCategorieEtude(),
+                profile.getVille()
+            ))
+            .toList();
+    }
+
     private UtilisateurResponseDto convertToDto(Utilisateur utilisateur) {
-        return new UtilisateurResponseDto(
-                utilisateur.getId(),
-                utilisateur.getEmail(),
-                utilisateur.getRole(),
-                utilisateur.getDateCreation()
-        );
+        UtilisateurResponseDto dto = new UtilisateurResponseDto();
+        dto.setId(utilisateur.getId());
+        dto.setEmail(utilisateur.getEmail());
+        dto.setRole(utilisateur.getRole());
+        dto.setDateCreation(utilisateur.getDateCreation());
+
+        // Si alternant, ajouter les infos du profil
+        if (utilisateur.getRole() == UserRole.ALTERNANT) {
+            AlternantProfile profile = alternantProfileRepository.findByUtilisateurId(utilisateur.getId()).orElse(null);
+            if (profile != null) {
+                dto.setNom(profile.getNom());
+                dto.setPrenom(profile.getPrenom());
+                dto.setTelephone(profile.getTelephone());
+                dto.setVille(profile.getVille());
+                dto.setLienLinkedin(profile.getLienLinkedin());
+                dto.setLienPortfolio(profile.getLienPortfolio());
+                dto.setDateNaissance(profile.getDateNaissance() != null ? profile.getDateNaissance().toString() : null);
+                dto.setEcole(profile.getEcole());
+                dto.setNiveauEtude(profile.getNiveauEtude());
+                dto.setCategorieEtude(profile.getCategorieEtude());
+            }
+        }
+        return dto;
     }
 }

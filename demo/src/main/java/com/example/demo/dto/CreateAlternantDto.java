@@ -30,5 +30,10 @@ public class CreateAlternantDto {
     private String ville;
     private String lienLinkedin;
     private String lienPortfolio;
-    private LocalDate dateNaissance;
+    private String dateNaissance;
+
+    // Nouveaux champs
+    private String ecole;
+    private String niveauEtude;
+    private String categorieEtude;
 }

@@ -14,6 +14,7 @@ export const routes: Routes = [
     { path: 'apprenti', component: ApprentiDashboardComponent },
     { path: 'recruteur', component: RecruteurDashboardComponent },   
     { path: 'reset-password', loadComponent: () => import('./pages/reset-password/reset-password').then(m => m.ResetPasswordComponent) },
+    { path: 'alternants', loadComponent: () => import('./pages/alternant-search/alternant-search').then(m => m.AlternantSearchComponent) },
 
     { path: '**', redirectTo: '' },
 ];

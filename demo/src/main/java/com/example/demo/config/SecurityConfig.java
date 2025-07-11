@@ -48,6 +48,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/utilisateurs/forgot-password").permitAll() // Permet l'accès au mot de passe oublié
                 .requestMatchers("/api/password/**").permitAll() // Permet l'accès aux endpoints de mot de passe
                 .requestMatchers("/api/test/**").permitAll() // Endpoints de test
+                .requestMatchers("/api/utilisateurs/public/alternants").permitAll() // Permet l'accès public à la liste des alternants
                 .anyRequest().authenticated() // Autres routes nécessitent une authentification
             )
             .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class) // Ajoute le filtre rate limiting
