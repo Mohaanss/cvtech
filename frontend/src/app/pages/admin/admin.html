@@ -1,0 +1,82 @@
+<div class="admin-container">
+  <header class="admin-header">
+    <h1>🎛️ Admin Dashboard</h1>
+    <div class="admin-meta">
+      <span>Connecté en tant que <b>{{users[0].email}}</b></span>
+      <span class="badge badge-admin">ADMIN</span>
+    </div>
+  </header>
+
+  <section class="stats">
+    <h2>Statistiques globales</h2>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Utilisateurs</div>
+        <div class="stat-value">1 234</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">CV Uploads</div>
+        <div class="stat-value">567</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Comptes bloqués</div>
+        <div class="stat-value">12</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Demandes support</div>
+        <div class="stat-value">3</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="user-table">
+    <h2>Derniers utilisateurs inscrits</h2>
+    <table>
+      <thead>
+        <tr><th></th><th>ID</th><th>Email</th><th>Rôle</th><th>Inscription</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td><img class="avatar" [src]="user.avatar" [alt]="user.email" /></td>
+          <td>{{user.id}}</td>
+          <td>{{user.email}}</td>
+          <td><span class="badge" [ngClass]="'badge-' + user.role.toLowerCase()">{{user.role}}</span></td>
+          <td>{{user.date}}</td>
+          <td>
+            <button class="btn-block">Bloquer</button>
+            <button class="btn-delete">Supprimer</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="logs">
+    <h2>Logs récents</h2>
+    <ul>
+      <li *ngFor="let log of logs">[{{log.date}}] {{log.action}}</li>
+    </ul>
+  </section>
+
+  <section class="actions">
+    <h2>Actions rapides</h2>
+    <button>Réinitialiser les stats</button>
+    <button>Envoyer une notification</button>
+    <button>Générer un rapport</button>
+  </section>
+
+  <section class="widgets">
+    <admin-widget note="Relancer les emails non lus" icon="✉️"></admin-widget>
+    <admin-widget note="Vérifier les documents manquants" icon="📑"></admin-widget>
+    <admin-widget note="Appeler le support pour incident #123" icon="📞"></admin-widget>
+    <admin-widget note="Envoyer un rappel aux alternants" icon="🔔"></admin-widget>
+  </section>
+
+  <section class="tools">
+    <h2>Outils admin</h2>
+    <input type="text" placeholder="Rechercher un utilisateur..." />
+    <button>Rechercher</button>
+    <button>Exporter CSV</button>
+    <button>Envoyer un message global</button>
+  </section>
+</div> 

@@ -7,13 +7,24 @@ import { RecruteurDashboardComponent } from './pages/recruteur-dashboard/recrute
 import { RegisterComponent } from './pages/register/register';
 
 export const routes: Routes = [
-    { path: '', component: HomeComponent },
-    { path: 'register', component: RegisterComponent },
-    { path: 'login', component: LoginComponent  },
-    { path: 'forgot-password', component: ForgotPasswordComponent },
-    { path: 'apprenti', component: ApprentiDashboardComponent },
-    { path: 'recruteur', component: RecruteurDashboardComponent },   
-    { path: 'reset-password', loadComponent: () => import('./pages/reset-password/reset-password').then(m => m.ResetPasswordComponent) },
+  { path: '', component: HomeComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'apprenti', component: ApprentiDashboardComponent },
+  { path: 'recruteur', component: RecruteurDashboardComponent },
+  {
+    path: 'reset-password',
+    loadComponent: () =>
+      import('./pages/reset-password/reset-password').then(
+        (m) => m.ResetPasswordComponent
+      ),
+  },
+  {
+    path: 'admin',
+    loadComponent: () =>
+      import('./pages/admin/admin').then((m) => m.AdminComponent),
+  },
 
-    { path: '**', redirectTo: '' },
+  { path: '**', redirectTo: '' },
 ];

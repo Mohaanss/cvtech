@@ -6,6 +6,7 @@
     <!-- Navigation principale -->
     <ul class="hidden md:flex space-x-6 items-center">
       <li><a routerLink="/" class="hover:text-blue-600">Accueil</a></li>
+      <li><a routerLink="/admin" class="hover:text-red-600 font-bold">Admin</a></li>
       
       <!-- Si utilisateur connecté -->
       <ng-container *ngIf="isLoggedIn()">
@@ -74,6 +75,7 @@
   <div *ngIf="open" class="md:hidden bg-white border-t">
     <div class="px-4 py-2 space-y-2">
       <a routerLink="/" class="block hover:text-blue-600 py-2">Accueil</a>
+      <a routerLink="/admin" class="block hover:text-red-600 font-bold py-2">Admin</a>
       
       <!-- Si utilisateur connecté -->
       <ng-container *ngIf="isLoggedIn()">

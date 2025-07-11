@@ -1,7 +1,8 @@
 export enum UserRole {
   ALTERNANT = 'ALTERNANT',
   ECOLE = 'ECOLE',
-  RECRUTEUR = 'RECRUTEUR'
+  RECRUTEUR = 'RECRUTEUR',
+  ADMIN = 'ADMIN',
 }
 
 export interface LoginDto {
@@ -67,4 +68,4 @@ export interface UtilisateurResponseDto {
   email: string;
   role: UserRole;
   dateCreation: string;
-} 
+}
